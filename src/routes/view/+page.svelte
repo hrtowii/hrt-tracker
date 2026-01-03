@@ -384,11 +384,7 @@
   }
 </script>
 
-<h1 class="text-3xl font-bold mb-2 px-4 pt-4">hrt tracking data</h1>
-<p class="mb-4 px-4 text-sm opacity-75">
-  This chart shows your hormone levels from blood tests along with your dosage
-  history over time.
-</p>
+<h1 class="text-3xl font-bold mb-2 px-4 pt-4">view graph / history</h1>
 <div class="flex flex-col p-4 w-full max-w-[100vw]">
   <div class="mb-4 flex flex-wrap gap-2">
     <button
@@ -401,51 +397,61 @@
     <div class="ml-auto flex gap-2">
       <span class="self-center text-sm">Time Range:</span>
       <button
-        class="px-3 py-1 text-sm transition-colors bg-latte-rose-pine-surface dark:bg-rose-pine-surface text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
-        class:bg-latte-rose-pine-iris={timeRangeInDays === 30}
-        class:dark:bg-rose-pine-iris={timeRangeInDays === 30}
-        class:text-latte-rose-pine-base={timeRangeInDays === 30}
-        class:dark:text-rose-pine-base={timeRangeInDays === 30}
+        class="px-3 py-1 text-sm transition-colors text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
+        class:bg-latte-rose-pine-surface={timeRangeInDays != 30}
+        class:dark:bg-rose-pine-surface={timeRangeInDays != 30}
+        class:bg-latte-rose-pine-iris={timeRangeInDays == 30}
+        class:dark:bg-rose-pine-iris={timeRangeInDays == 30}
+        class:text-latte-rose-pine-base={timeRangeInDays == 30}
+        class:dark:text-rose-pine-base={timeRangeInDays == 30}
         onclick={() => updateTimeRange(30)}
       >
         30 days
       </button>
       <button
-        class="px-3 py-1 text-sm transition-colors bg-latte-rose-pine-surface dark:bg-rose-pine-surface text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
-        class:bg-latte-rose-pine-iris={timeRangeInDays === 90}
-        class:dark:bg-rose-pine-iris={timeRangeInDays === 90}
-        class:text-latte-rose-pine-base={timeRangeInDays === 90}
-        class:dark:text-rose-pine-base={timeRangeInDays === 90}
+        class="px-3 py-1 text-sm transition-colors text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
+        class:bg-latte-rose-pine-surface={timeRangeInDays != 90}
+        class:dark:bg-rose-pine-surface={timeRangeInDays != 90}
+        class:bg-latte-rose-pine-iris={timeRangeInDays == 90}
+        class:dark:bg-rose-pine-iris={timeRangeInDays == 90}
+        class:text-latte-rose-pine-base={timeRangeInDays == 90}
+        class:dark:text-rose-pine-base={timeRangeInDays == 90}
         onclick={() => updateTimeRange(90)}
       >
         90 days
       </button>
       <button
-        class="px-3 py-1 text-sm transition-colors bg-latte-rose-pine-surface dark:bg-rose-pine-surface text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
-        class:bg-latte-rose-pine-iris={timeRangeInDays === 180}
-        class:dark:bg-rose-pine-iris={timeRangeInDays === 180}
-        class:text-latte-rose-pine-base={timeRangeInDays === 180}
-        class:dark:text-rose-pine-base={timeRangeInDays === 180}
+        class="px-3 py-1 text-sm transition-colors text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
+        class:bg-latte-rose-pine-surface={timeRangeInDays != 180}
+        class:dark:bg-rose-pine-surface={timeRangeInDays != 180}
+        class:bg-latte-rose-pine-iris={timeRangeInDays == 180}
+        class:dark:bg-rose-pine-iris={timeRangeInDays == 180}
+        class:text-latte-rose-pine-base={timeRangeInDays == 180}
+        class:dark:text-rose-pine-base={timeRangeInDays == 180}
         onclick={() => updateTimeRange(180)}
       >
         180 days
       </button>
       <button
-        class="px-3 py-1 text-sm transition-colors bg-latte-rose-pine-surface dark:bg-rose-pine-surface text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
-        class:bg-latte-rose-pine-iris={timeRangeInDays === 365}
-        class:dark:bg-rose-pine-iris={timeRangeInDays === 365}
-        class:text-latte-rose-pine-base={timeRangeInDays === 365}
-        class:dark:text-rose-pine-base={timeRangeInDays === 365}
+        class="px-3 py-1 text-sm transition-colors text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
+        class:bg-latte-rose-pine-surface={timeRangeInDays != 365}
+        class:dark:bg-rose-pine-surface={timeRangeInDays != 365}
+        class:bg-latte-rose-pine-iris={timeRangeInDays == 365}
+        class:dark:bg-rose-pine-iris={timeRangeInDays == 365}
+        class:text-latte-rose-pine-base={timeRangeInDays == 365}
+        class:dark:text-rose-pine-base={timeRangeInDays == 365}
         onclick={() => updateTimeRange(365)}
       >
         1 year
       </button>
       <button
-        class="px-3 py-1 text-sm transition-colors bg-latte-rose-pine-surface dark:bg-rose-pine-surface text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
-        class:bg-latte-rose-pine-iris={timeRangeInDays === 9999}
-        class:dark:bg-rose-pine-iris={timeRangeInDays === 9999}
-        class:text-latte-rose-pine-base={timeRangeInDays === 9999}
-        class:dark:text-rose-pine-base={timeRangeInDays === 9999}
+        class="px-3 py-1 text-sm transition-colors text-latte-rose-pine-text dark:text-rose-pine-text rounded dark:hover:bg-rose-pine-overlay hover:bg-latte-rose-pine-overlay"
+        class:bg-latte-rose-pine-surface={timeRangeInDays != 9999}
+        class:dark:bg-rose-pine-surface={timeRangeInDays != 9999}
+        class:bg-latte-rose-pine-iris={timeRangeInDays == 9999}
+        class:dark:bg-rose-pine-iris={timeRangeInDays == 9999}
+        class:text-latte-rose-pine-base={timeRangeInDays == 9999}
+        class:dark:text-rose-pine-base={timeRangeInDays == 9999}
         onclick={() => updateTimeRange(9999)}
       >
         All
@@ -456,7 +462,9 @@
   <div class="mb-4 flex flex-wrap gap-3">
     <span class="self-center text-sm">Show:</span>
     <button
-      class="px-3 py-1 text-sm transition-colors rounded hover:bg-latte-rose-pine-overlay dark:hover:bg-rose-pine-overlay hover:text-latte-rose-pine-text dark:hover:text-rose-pine-text"
+      class="px-3 py-1 text-sm transition-colors text-latte-rose-pine-text dark:text-rose-pine-text rounded hover:bg-latte-rose-pine-overlay dark:hover:bg-rose-pine-overlay hover:text-latte-rose-pine-text dark:hover:text-rose-pine-text"
+      class:bg-latte-rose-pine-surface={!showBloodTests}
+      class:dark:bg-rose-pine-surface={!showBloodTests}
       class:bg-latte-rose-pine-iris={showBloodTests}
       class:dark:bg-rose-pine-iris={showBloodTests}
       class:text-latte-rose-pine-base={showBloodTests}
@@ -466,7 +474,9 @@
       {showBloodTests ? "✓" : ""} Blood Test Levels
     </button>
     <button
-      class="px-3 py-1 text-sm transition-colors rounded hover:bg-latte-rose-pine-overlay dark:hover:bg-rose-pine-overlay hover:text-latte-rose-pine-text dark:hover:text-rose-pine-text"
+      class="px-3 py-1 text-sm transition-colors text-latte-rose-pine-text dark:text-rose-pine-text rounded hover:bg-latte-rose-pine-overlay dark:hover:bg-rose-pine-overlay hover:text-latte-rose-pine-text dark:hover:text-rose-pine-text"
+      class:bg-latte-rose-pine-surface={!showMedications}
+      class:dark:bg-rose-pine-surface={!showMedications}
       class:bg-latte-rose-pine-iris={showMedications}
       class:dark:bg-rose-pine-iris={showMedications}
       class:text-latte-rose-pine-base={showMedications}

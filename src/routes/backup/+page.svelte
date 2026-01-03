@@ -69,10 +69,6 @@
       class="border rounded-lg p-4 bg-white dark:bg-rose-pine-surface shadow-md"
     >
       <h2 class="text-2xl mb-4">export data to json</h2>
-      <p class="mb-4 text-sm opacity-75">
-        Download your blood tests and dosage history as a JSON file for backup
-        or sharing.
-      </p>
       <button
         class="cursor-pointer bg-latte-rose-pine-foam hover:bg-rose-pine-pine text-white font-medium py-2 px-4 rounded transition-colors"
         onclick={exportToJSON}
@@ -88,10 +84,6 @@
       class="border rounded-lg p-4 bg-white dark:bg-rose-pine-surface shadow-md"
     >
       <h2 class="text-2xl mb-4">import data from json</h2>
-      <p class="mb-4 text-sm opacity-75">
-        Upload a previously exported JSON file to restore your data. This will
-        replace your current data.
-      </p>
       <input
         type="file"
         accept=".json"
