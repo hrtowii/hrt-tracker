@@ -32,7 +32,6 @@ class hrtStore {
 
     $effect.root(() => {
       $effect(() => {
-        // if (!browser) return;
         localStorage.setItem(HRT_STORAGE_KEY, JSON.stringify(this.data));
       });
     });

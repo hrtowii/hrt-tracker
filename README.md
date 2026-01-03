@@ -1,37 +1,37 @@
 # hrt tracker
 # (planned) features
-* localstorage, or some simple shared one you can copy / save across browsers. no login that's not the point
-* set reminders for taking hrt? but not really ideal as it's a website
+* localstorage, or some simple shared one you can copy / save across browsers. no login that's not the point ✅
+* set reminders for taking hrt? but not really ideal as it's a website ❌
 * simplest part:
-	* enter → get asked to put in current dosage, past blood results (or import)
-	* ask if you wanna set up a tracker → track various configurable things
+	* enter → get asked to put in current dosage, past blood results (or import) - partial
+	* ask if you wanna set up a tracker → track various configurable things ❌
 	* if not, simple mode -
-		* you just input whether injected / oral
-			* → time of ingestion / injection and type of hormone. ev oral? injected? hemihydrate?
-* change in graphs overtime for trackable stuff
+		* you just input whether injected / oral ✅
+			* → time of ingestion / injection and type of hormone. ev oral? injected? hemihydrate? ✅
+* change in graphs overtime for trackable stuff ✅
 
 ## trackable stuff
-1. weight
-2. height
-3. (bmi → calculated)
-4. underbust
-5. bust
-6. → bra size
-7. bideltoid
-8. waist
-9. hip
+1. weight ❌
+2. height ❌
+3. (bmi → calculated) ❌
+4. underbust ❌
+5. bust ❌
+6. → bra size ❌
+7. bideltoid ❌
+8. waist ❌
+9. hip ❌
 
 
 ## routes
-index - onboarding if not setup, if setup then dashboard view, buttons to add blood test or check off dosage
+index - onboarding if not setup, if setup then dashboard view, buttons to add blood test or check off dosage ⚠️ partial (just static links for now)
 
-create/blood-test → create a new blood test entry. feature → read from pdf / image of an actual medical result using ocr. free vision model? or local? or tesseract?
-create/dosage → create a new daily hrt dosage
+create/blood-test → create a new blood test entry. feature → read from pdf / image of an actual medical result using ocr. free vision model? or local? or tesseract? ✅ (ocr not implemented)
+create/dosage → create a new daily hrt dosage ✅
 
-tracker/ → view blood tests, view dosages
+view/ → view blood tests, view dosages (note: /tracker was renamed to /view) ✅
 
-/settings → idk theme option maybe? defaulting to rose pine for myself
+/settings → idk theme option maybe? defaulting to rose pine for myself ❌ (theme is rose pine by default but no settings page)
 
 optional:
-* /backup → import, export localstorage to a json
-* use remotestorage with a small self hosted server
+* /backup → import, export localstorage to a json ⚠️ placeholder exists
+* use remotestorage with a small self hosted server ❌
