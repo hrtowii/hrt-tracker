@@ -5,12 +5,12 @@
     InjectableEstradiols,
     OralEstradiols,
     Antiandrogens,
-    BloodTestUnits,
     type DosageHistoryEntry,
     DosageUnits,
     OralMethod,
     InjectionMethod,
   } from "$lib/types";
+  import { untrack } from "svelte";
 
   let injectionDateTime = $state("");
   let oralDateTime = $state("");
@@ -18,31 +18,85 @@
   let eUnit: DosageUnits = $state(DosageUnits.mg);
   let aaDose = $state(0);
   let aaUnit: DosageUnits = $state(DosageUnits.mg);
-  let route: "injection" | "oral" = $state<"injection" | "oral">("injection");
   let estrogen: EstrogenType = $state({
     route: "injection",
     method: InjectionMethod.intramuscular,
     type: InjectableEstradiols.Valerate,
   });
 
-  $effect(() => {
-    if (route === "injection") {
+  let hasInitialized = $state(false);
+  let hasLoadedFromHistory = $state(false);
+  let isFromPreviousDosage = $state(false);
+  let aa: Antiandrogens | "" = $state(Antiandrogens.CPA);
+
+  function getCurrentDateTime(): string {
+    return new Date().toISOString().slice(0, 16);
+  }
+  function loadFromHistory() {
+    const history = hrtData.data.dosageHistory;
+    if (history.length === 0) return;
+    const currentRoute = untrack(() => estrogen.route);
+    // hack: doing this because directly stating estrogen.route makes the effect track it.
+    // changing the route depending on what's in local storage thus triggers it again, which changes it again which triggers it again, etc.
+    // solution: untrack it from the implicit "dependency array"
+    // add onchange with handleRouteChange which just runs this function
+    // lastly, the radio buttons also change the route, which fucks everything up
+    const targetType =
+      currentRoute === "injection" ? "injectableEstradiol" : "oralEstradiol";
+
+    const matchingEntries = history.filter(
+      (entry) => entry.medicationType === targetType,
+    );
+
+    if (matchingEntries.length === 0) return;
+
+    const mostRecent = matchingEntries.sort((a, b) => b.date - a.date)[0];
+
+    if (mostRecent.medicationType === "injectableEstradiol") {
       estrogen = {
         route: "injection",
-        method: InjectionMethod.intramuscular,
-        type: InjectableEstradiols.Valerate,
+        method: mostRecent.method,
+        type: mostRecent.type,
       };
-    } else {
+      eDose = mostRecent.dose;
+      eUnit = mostRecent.unit;
+      isFromPreviousDosage = true;
+    } else if (mostRecent.medicationType === "oralEstradiol") {
       estrogen = {
         route: "oral",
-        method: OralMethod.oral,
-        type: OralEstradiols.Valerate,
+        method: mostRecent.method,
+        type: mostRecent.type,
       };
+      eDose = mostRecent.dose;
+      eUnit = mostRecent.unit;
+      isFromPreviousDosage = true;
+
+      const aaEntry = history
+        .filter((entry) => entry.medicationType === "antiandrogen")
+        .sort((a, b) => b.date - a.date)[0];
+
+      if (aaEntry) {
+        aa = aaEntry.type as Antiandrogens;
+        aaDose = aaEntry.dose;
+        aaUnit = aaEntry.unit;
+      }
+    }
+  }
+  $effect(() => {
+    if (!hasInitialized) {
+      injectionDateTime = getCurrentDateTime();
+      oralDateTime = getCurrentDateTime();
+      hasInitialized = true;
+    }
+    if (!hasLoadedFromHistory) {
+      loadFromHistory();
+      hasLoadedFromHistory = true;
     }
   });
 
-  let aa: Antiandrogens | "" = $state(Antiandrogens.CPA);
-
+  function handleRouteChange() {
+    loadFromHistory();
+  }
   function enumToDropdownOptions(e: any) {
     return Object.entries(e).map(([key, val]) => ({
       value: val as string,
@@ -65,9 +119,9 @@
   function submitDosageForm() {
     let newDosageRecord: DosageHistoryEntry;
     const currentDateTime =
-      route === "injection" ? injectionDateTime : oralDateTime;
+      estrogen.route === "injection" ? injectionDateTime : oralDateTime;
 
-    if (route === "injection") {
+    if (estrogen.route === "injection") {
       newDosageRecord = {
         date: new Date(currentDateTime).getTime(),
         medicationType: "injectableEstradiol",
@@ -88,7 +142,7 @@
 
       if (aa !== "") {
         const aaRecord: DosageHistoryEntry = {
-          date: Date.now(),
+          date: new Date(currentDateTime).getTime(),
           medicationType: "antiandrogen",
           type: aa,
           dose: aaDose,
@@ -112,6 +166,11 @@
     >
   </div>
   <form onsubmit={handleSubmit} class="shadow-md rounded pt-6 pb-8 mb-4">
+    {#if isFromPreviousDosage}
+      <div class="mb-4 text-gray-500 dark:text-gray-400 italic text-sm">
+        populated from old dosage
+      </div>
+    {/if}
     <div class="mb-4">
       <span
         class="block text-latte-rose-pine-text dark:text-rose-pine-text text-sm font-medium mb-2"
@@ -123,6 +182,7 @@
           type="radio"
           class="form-radio w-4 h-4 text-latte-rose-pine-foam"
           bind:group={estrogen.route}
+          onchange={handleRouteChange}
           value="injection"
           id="injectionOption"
         />
@@ -133,6 +193,7 @@
           type="radio"
           class="form-radio w-4 h-4 text-latte-rose-pine-foam"
           bind:group={estrogen.route}
+          onchange={handleRouteChange}
           value="oral"
           id="oralOption"
         />
@@ -149,13 +210,19 @@
           >
             injection date / time
           </label>
-          <input
-            id="injectionDateTime"
-            type="datetime-local"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-latte-rose-pine-text dark:text-rose-pine-text leading-tight focus:outline-none focus:shadow-outline"
-            bind:value={injectionDateTime}
-            required
-          />
+          <div
+            onclick={() =>
+              document.getElementById("injectionDateTime")?.focus()}
+            class="cursor-pointer"
+          >
+            <input
+              id="injectionDateTime"
+              type="datetime-local"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-latte-rose-pine-text dark:text-rose-pine-text leading-tight focus:outline-none focus:shadow-outline"
+              bind:value={injectionDateTime}
+              required
+            />
+          </div>
         </div>
 
         <div>
@@ -185,13 +252,18 @@
           >
             oral intake date / time
           </label>
-          <input
-            id="oralDateTime"
-            type="datetime-local"
-            class="shadow appearance-none border rounded w-full py-2 px-3 text-latte-rose-pine-text dark:text-rose-pine-text leading-tight focus:outline-none focus:shadow-outline"
-            bind:value={oralDateTime}
-            required
-          />
+          <div
+            onclick={() => document.getElementById("oralDateTime")?.focus()}
+            class="cursor-pointer"
+          >
+            <input
+              id="oralDateTime"
+              type="datetime-local"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-latte-rose-pine-text dark:text-rose-pine-text leading-tight focus:outline-none focus:shadow-outline"
+              bind:value={oralDateTime}
+              required
+            />
+          </div>
         </div>
 
         <div class="flex flex-col sm:flex-row md:space-x-4">
@@ -232,6 +304,8 @@
               <input
                 id="dose"
                 type="number"
+                min="1"
+                step="0.01"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-latte-rose-pine-text dark:text-rose-pine-text leading-tight focus:outline-none focus:shadow-outline"
                 bind:value={eDose}
                 required
@@ -314,6 +388,8 @@
                 <input
                   id="aaDose"
                   type="number"
+                  min="1"
+                  step="0.01"
                   class="shadow appearance-none border rounded w-full py-2 px-3 text-latte-rose-pine-text dark:text-rose-pine-text leading-tight focus:outline-none focus:shadow-outline"
                   bind:value={aaDose}
                 />
@@ -353,6 +429,8 @@
         <input
           id="dose"
           type="number"
+          min="1"
+          step="0.01"
           class="shadow appearance-none border rounded w-full py-2 px-3 text-latte-rose-pine-text dark:text-rose-pine-text leading-tight focus:outline-none focus:shadow-outline"
           bind:value={eDose}
           required

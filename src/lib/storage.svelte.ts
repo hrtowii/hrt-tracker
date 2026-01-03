@@ -23,7 +23,7 @@ class hrtStore {
   constructor() {
     // 3) on first load in the browser, hydrate from localStorage
     $effect.root(() => {
-      // if (!browser) return;
+      if (!browser) return;
       const raw = localStorage.getItem(HRT_STORAGE_KEY);
       this.data = raw ? JSON.parse(raw) : defaultData;
       // ^^ hrtData is still undefined bc it's in the class, temporal dead zone. avoid referring to it
@@ -33,7 +33,8 @@ class hrtStore {
     $effect.root(() => {
       $effect(() => {
         localStorage.setItem(HRT_STORAGE_KEY, JSON.stringify(this.data));
-      });
+      }
+      );
     });
   }
 }
